@@ -2,7 +2,7 @@
 
 **Feature Branch**: `001-apricot-fitness`  
 **Created**: 2026-11-07  
-**Status**: Draft  
+**Updated**: 2026-11-09  
 **Input**: User description: "Create a project specification for Apricot Fitness Center is an all-in-one web platform offering professional coaching, custom fitness plans, and an online store for authentic gym gear. Our goal is to help users achieve their health goals by providing top-tier guidance and reliable fitness products in a single place. Include: a project title and description, the purpose and target audience, user stories for core workflows (sign up, create, read, update, delete), acceptance criteria for each story, API endpoints, and implementation priority"
 
 ## Project Title and Description
@@ -22,9 +22,22 @@
 - Staff managing memberships, product inventory, and user accounts
 - Fitness shoppers who want authentic gym equipment and accessories
 
+## MVP Scope
+
+The MVP is **Phase 1** of the Implementation Priority section. It includes User Stories 1 to 5 in full and the Phase 1 scenarios of User Story 6. It excludes the Phase 2 scenarios of User Story 6, all of User Story 7 (delete and account closure), the product catalog, cart and orders, auditing, and the endpoints that support them. User stories are listed in build order: every Phase 1 story comes before any Phase 2 story, and inside each story the Phase 1 scenarios come first. The Implementation Priority section is the authority if labels ever disagree.
+
+## Clarifications
+
+These assumptions were added on 2026-11-09 to make the MVP stories testable. They are **proposed decisions and need team confirmation**.
+
+- **Roles**: The system has three roles: `member`, `coach`, and `admin`.
+- **Account creation**: Public sign-up always creates a `member`. Coach and admin accounts are created by an admin or seeded in the database; they cannot be created through public sign-up.
+- **Coach-member link**: Each member profile has an optional `coachId`. An admin sets it through `PATCH /api/users/:id`. A coach may view members, and create plans for them, only when the member's `coachId` is that coach.
+- **Goals storage**: Member goals and training preferences are part of the member profile and are saved through `PATCH /api/users/:id` and read through `GET /api/users/me`.
+
 ## User Scenarios & Testing
 
-### User Story 1 - Member sign-up and onboarding (Priority: P1)
+### User Story 1 - Member sign-up and onboarding (Phase: 1 - MVP)
 A new user wants to create an account, set fitness goals, and begin working with the platform.
 
 **Why this priority**: Account creation and onboarding are the entry point to the product and determine whether users complete the journey to coaching and training engagement.
@@ -33,12 +46,42 @@ A new user wants to create an account, set fitness goals, and begin working with
 
 **Acceptance Scenarios**:
 1. **Given** a user has not created an account, **When** they complete the sign-up form with valid details, **Then** the system creates a member profile and sends a confirmation.
-2. **Given** a valid member profile exists, **When** the user sets goals and preferred training preferences, **Then** the system stores the information for use in future plan recommendations.
-3. **Given** the user enters invalid or duplicate account details, **When** they submit the form, **Then** the system shows clear validation errors and prevents duplicate accounts.
+2. **Given** the user enters invalid or duplicate account details, **When** they submit the form, **Then** the system shows clear validation errors and prevents duplicate accounts.
+3. **Given** a valid member profile exists, **When** the user sets goals and preferred training preferences, **Then** the system stores the information for use in future plan recommendations.
 
 ---
 
-### User Story 2 - Create a personalized fitness plan (Priority: P1)
+### User Story 2 - Log in and log out (Phase: 1 - MVP)
+A registered user (member, coach, or admin) wants to log in to access their account and log out when finished.
+
+**Why this priority**: Every protected workflow depends on knowing who the user is. Without login and session handling, profiles, plans, and role restrictions cannot work.
+
+**Independent Test**: A registered user can log in with correct credentials, reach a protected page, log out, and then be unable to reach that page.
+
+**Acceptance Scenarios**:
+1. **Given** a registered user with valid credentials, **When** they submit the login form, **Then** the system starts an authenticated session and returns their role.
+2. **Given** an email or password that is incorrect, **When** the user submits the login form, **Then** the system rejects the attempt with a single generic message that does not reveal which field was wrong.
+3. **Given** a logged-in user, **When** they log out, **Then** the session ends and later requests to protected endpoints are rejected.
+4. **Given** a user who is not logged in, **When** they request a protected endpoint, **Then** the system responds with an unauthenticated error and returns no data.
+
+---
+
+### User Story 3 - Role-based access control (Phase: 1 - MVP)
+The platform needs to restrict what each role can see and change so that sensitive data stays with authorized people.
+
+**Why this priority**: Member health goals and personal details are sensitive. Access rules must exist before profile and plan endpoints are exposed.
+
+**Independent Test**: Using a member, a coach, and an admin account, each role can reach only the records and actions allowed for that role.
+
+**Acceptance Scenarios**:
+1. **Given** a signed-in member, **When** they request another member's profile or plans, **Then** the system responds with a forbidden error and returns no data.
+2. **Given** a signed-in coach, **When** they request a member whose `coachId` is not theirs, **Then** the system responds with a forbidden error and returns no data.
+3. **Given** a signed-in member, **When** they try to create a plan or set a member's `coachId`, **Then** the system rejects the action as forbidden.
+4. **Given** a signed-in admin, **When** they set a member's `coachId` to a coach, **Then** the system saves the link and that coach can then view the member.
+
+---
+
+### User Story 4 - Create a personalized fitness plan (Phase: 1 - MVP)
 A coach or staff member wants to create a custom training plan for a member based on their goal, availability, and fitness level.
 
 **Why this priority**: Personalized plans are central to the product value proposition and directly support member outcomes.
@@ -47,12 +90,12 @@ A coach or staff member wants to create a custom training plan for a member base
 
 **Acceptance Scenarios**:
 1. **Given** a coach is authenticated, **When** they create a plan with objectives, schedule, and exercises, **Then** the system saves the plan and links it to the chosen member.
-2. **Given** a plan has been created, **When** the member opens their dashboard, **Then** they can view the assigned plan and its training details.
-3. **Given** a plan is incomplete or invalid, **When** the coach submits it, **Then** the system blocks submission and requests missing information.
+2. **Given** a plan is incomplete or invalid, **When** the coach submits it, **Then** the system blocks submission and requests missing information.
+3. **Given** a plan has been created, **When** the member opens their dashboard, **Then** they can view the assigned plan and its training details.
 
 ---
 
-### User Story 3 - Read and review existing user and plan data (Priority: P1)
+### User Story 5 - Read and review existing user and plan data (Phase: 1 - MVP)
 A member or coach wants to access their profile, goal progress, and relevant plan information.
 
 **Why this priority**: Read access enables confidence, accountability, and day-to-day usage of the platform.
@@ -61,26 +104,27 @@ A member or coach wants to access their profile, goal progress, and relevant pla
 
 **Acceptance Scenarios**:
 1. **Given** a member is signed in, **When** they open their dashboard, **Then** they can view their profile, goals, and active plan details.
-2. **Given** a coach is signed in, **When** they search for a member or plan, **Then** they can view only the records they are authorized to access.
+2. **Given** a coach is signed in, **When** they list or open members, **Then** they see only the members whose `coachId` is theirs, and only the plans assigned to those members. *(Revised on 2026-11-09: "search" replaced with a member list so the scenario matches `GET /api/users`.)*
 3. **Given** data is unavailable or not found, **When** a user requests it, **Then** the system returns a clear not-found or access error response.
 
 ---
 
-### User Story 4 - Update member profile, plan details, and account settings (Priority: P1)
+### User Story 6 - Update member profile, plan details, and account settings (Phase: 1 for scenarios 1 and 2; Phase 2 for scenarios 3 and 4)
 A user needs to revise personal details, update goals, or adjust a training plan as circumstances change.
 
-**Why this priority**: Plans and personal data change over time, and updates are required to maintain trust and effectiveness.
+**Why this priority**: Plans and personal data change over time, and updates are required to maintain trust and effectiveness. Profile updates ship in the MVP; plan editing waits for Phase 2 ("Plan editing and deletion rules").
 
 **Independent Test**: A member or coach can update a profile or plan and see the revised data immediately after save.
 
 **Acceptance Scenarios**:
-1. **Given** a member has an existing profile, **When** they update their goals or contact information, **Then** the system stores the new values without deleting prior data incorrectly.
-2. **Given** a coach edits a plan schedule or exercise details, **When** the save completes, **Then** the member sees the updated training guidance reflected in the assigned plan.
-3. **Given** invalid update data is submitted, **When** the user saves the change, **Then** validation rules reject the update and explain the problem.
+1. **Given** a member has an existing profile, **When** they update their goals or contact information, **Then** the system stores the new values without deleting prior data incorrectly. *(Phase 1)*
+2. **Given** invalid profile data is submitted, **When** the user saves the change, **Then** validation rules reject the update and explain the problem. *(Phase 1)*
+3. **Given** a coach edits a plan schedule or exercise details, **When** the save completes, **Then** the member sees the updated training guidance reflected in the assigned plan. *(Phase 2)*
+4. **Given** invalid plan data is submitted, **When** the coach saves the change, **Then** validation rules reject the update and explain the problem. *(Phase 2; split out of the original scenario 3 on 2026-11-09 so each scenario belongs to one phase.)*
 
 ---
 
-### User Story 5 - Delete records and manage account closure (Priority: P2)
+### User Story 7 - Delete records and manage account closure (Phase: 2 - not in MVP)
 A user or staff member may need to remove outdated records or close an account when a membership or engagement has ended.
 
 **Why this priority**: Delete flows are essential for privacy, lifecycle management, and operational cleanup, but they are secondary to onboarding and daily use.
@@ -120,11 +164,14 @@ A user or staff member may need to remove outdated records or close an account w
 - **FR-012**: The system MUST restrict access to sensitive data by role so that only authorized members, coaches, or administrators can view or modify it.
 - **FR-013**: The system MUST provide validation, error messages, and confirmation states for critical create, update, and delete actions.
 - **FR-014**: The system MUST retain a basic audit trail for account changes, plan changes, and order activity to support trust and issue resolution.
+- **FR-015**: The system MUST authenticate users with email and password, start a session on success, and end it on logout. *(Added 2026-11-09)*
+- **FR-016**: The system MUST let an admin link a member to a coach, and MUST limit a coach's access to members linked to them. *(Added 2026-11-09)*
 
 ### Key Entities
 
-- **Member**: A registered user with a profile, fitness goals, preferred training information, and account status.
+- **Member**: A registered user with a profile, fitness goals, preferred training information, an optional `coachId`, and account status.
 - **Coach**: An authenticated professional user with permission to create and manage plans for assigned members.
+- **Admin**: An authenticated staff user who can link members to coaches and manage accounts and products. *(Added 2026-11-09)*
 - **FitnessPlan**: A structured program containing goals, workout schedule, exercise descriptions, and assignment metadata.
 - **Workout**: A scheduled training unit within a plan, including a name, exercises, timing, and instructions.
 - **Product**: An item in the online store with name, description, category, pricing, availability, and authenticity metadata.
@@ -132,18 +179,24 @@ A user or staff member may need to remove outdated records or close an account w
 
 ## API Endpoints
 
-The following API endpoints represent the proposed contract for the MVP and core workflows:
+The following API endpoints represent the proposed contract for the MVP and core workflows. They are grouped by phase, with Phase 1 first.
+
+### Phase 1 - MVP
 
 - **POST /api/auth/signup**: Create a new member account
-- **POST /api/auth/login**: Authenticate a member or coach
+- **POST /api/auth/login**: Authenticate a member, coach, or admin
 - **POST /api/auth/logout**: End an active user session
-- **GET /api/users/me**: Retrieve the authenticated user profile
+- **GET /api/users/me**: Retrieve the authenticated user profile, including goals and preferences
+- **GET /api/users**: List members the requester may see (a coach sees linked members; an admin sees all) *(Added 2026-11-09)*
 - **GET /api/users/:id**: Retrieve a user profile for an authorized coach or admin
-- **PATCH /api/users/:id**: Update member or coach profile details
-- **DELETE /api/users/:id**: Deactivate or remove a user account
+- **PATCH /api/users/:id**: Update member or coach profile details, goals, and preferences; admin-only for `coachId`
 - **POST /api/plans**: Create a fitness plan
 - **GET /api/plans/:id**: Retrieve a plan by ID
 - **GET /api/plans?memberId=:memberId**: List plans assigned to a member
+
+### Phase 2 and later
+
+- **DELETE /api/users/:id**: Deactivate or remove a user account
 - **PATCH /api/plans/:id**: Update plan content or assignment
 - **DELETE /api/plans/:id**: Remove or archive a plan
 - **GET /api/products**: List catalog items by category or search term
