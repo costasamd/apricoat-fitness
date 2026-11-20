@@ -29,7 +29,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ## Team Members
 
 - Samuel C.
-- Damilola A.
+- Damilola A....
 - Leilany D.
 - Vivian E.
 
