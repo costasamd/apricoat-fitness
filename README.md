@@ -28,10 +28,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## Team Members
 
-- Samuel C.
-- Damilola A....
-- Leilany D.
-- Vivian E.
+- Samuel Costa
+- Damilola Adefenwa
+- Leilany Dumlao
+- Vivian Eze
 
 ## Project Description
 
