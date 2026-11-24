@@ -1,6 +1,12 @@
 import Image from "next/image"
 import Link from "next/link"
+import { Suspense } from "react"
+import NavLinks from "@/components/layout/NavLinks"
 
+<<<<<<< HEAD
+=======
+// Placeholder logo: replace the circle with Damilola's logo later.
+>>>>>>> 7b45bc619410f51d61eeadcd72886ec1b4f3a3f8
 export default function Header() {
   return (
     <header className="bg-emerald-950 text-white">
@@ -21,6 +27,7 @@ export default function Header() {
           <span>Apricot Fitness</span>
         </Link>
 
+<<<<<<< HEAD
     <nav
   aria-label="Main navigation"
   className="hidden items-center gap-4 md:flex lg:gap-6"
@@ -55,3 +62,13 @@ export default function Header() {
     </header>
   )
 }
+=======
+                {/* usePathname() waits on pages with an unknown [id], so it needs a Suspense boundary */}
+                <Suspense>
+                    <NavLinks />
+                </Suspense>
+            </div>
+        </header>
+    )
+}
+>>>>>>> 7b45bc619410f51d61eeadcd72886ec1b4f3a3f8
