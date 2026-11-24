@@ -5,9 +5,11 @@ import { usePathname } from "next/navigation"
 
 const links = [
     { href: "/", label: "Home" },
+    { href: "/about", label: "About Us" },
+    { href: "/products", label: "Product Catalogue" },
+    { href: "/contact", label: "Contact Us" },
     { href: "/dashboard", label: "Dashboard" },
     { href: "/profile", label: "Profile" },
-    { href: "/login", label: "Log in" },
 ]
 
 export default function NavLinks() {
@@ -16,7 +18,7 @@ export default function NavLinks() {
     return (
         <nav
             aria-label="Main navigation"
-            className="hidden items-center gap-6 md:flex"
+            className="hidden items-center gap-4 md:flex lg:gap-6"
         >
             {links.map((link) => {
                 const isActive =
@@ -36,10 +38,11 @@ export default function NavLinks() {
                 )
             })}
             <Link
-                href="/signup"
+                href="/login"
+                aria-current={pathname.startsWith("/login") ? "page" : undefined}
                 className="inline-flex min-h-11 items-center rounded-lg bg-amber-700 px-4 py-2 font-semibold hover:bg-amber-800"
             >
-                Sign up
+                Log in / Sign up
             </Link>
         </nav>
     )
