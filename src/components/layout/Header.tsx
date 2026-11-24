@@ -1,6 +1,8 @@
 import Link from "next/link"
+import { Suspense } from "react"
+import NavLinks from "@/components/layout/NavLinks"
 
-// Placeholder logo: replace the logo later.
+// Placeholder logo: replace the circle with Damilola's logo later.
 export default function Header() {
     return (
         <header className="bg-emerald-950 text-white">
@@ -16,29 +18,10 @@ export default function Header() {
                     <span>Apricot Fitness</span>
                 </Link>
 
-                <nav
-                    aria-label="Main navigation"
-                    className="hidden items-center gap-6 md:flex"
-                >
-                    <Link href="/" className="hover:text-amber-300">
-                        Home
-                    </Link>
-                    <Link href="/dashboard" className="hover:text-amber-300">
-                        Dashboard
-                    </Link>
-                    <Link href="/profile" className="hover:text-amber-300">
-                        Profile
-                    </Link>
-                    <Link href="/login" className="hover:text-amber-300">
-                        Log in
-                    </Link>
-                    <Link
-                        href="/signup"
-                        className="inline-flex min-h-11 items-center rounded-lg bg-amber-700 px-4 py-2 font-semibold hover:bg-amber-800"
-                    >
-                        Sign up
-                    </Link>
-                </nav>
+                {/* usePathname() waits on pages with an unknown [id], so it needs a Suspense boundary */}
+                <Suspense>
+                    <NavLinks />
+                </Suspense>
             </div>
         </header>
     )
