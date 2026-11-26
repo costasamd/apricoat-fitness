@@ -1,69 +1,73 @@
-import Image from "next/image";
+import Link from "next/link"
+import FeatureCard from "@/components/ui/FeatureCard"
+import Image from "next/image"
 
-export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+export default function HomePage() {
+    return (
+        <main className="flex-1 bg-stone-50">
+            <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
+                <div className="grid items-center gap-8 md:grid-cols-2">
+                    <div className="flex flex-col gap-6">
+                        <p className="text-sm font-semibold tracking-wide text-amber-900 uppercase">
+                            All-in-one fitness platform
+                        </p>
+                        <h1 className="text-4xl font-extrabold text-emerald-950 md:text-5xl">
+                            Coaching, Personalized Plans, and Trusted Fitness
+                            Gear.
+                        </h1>
+                        <p className="text-lg text-stone-700">
+                            Get a fitness plan built for your goals, follow it
+                            with help from a certified coach, and track your
+                            progress in one account.
+                        </p>
+                        <div className="flex flex-wrap gap-4">
+                            <Link
+                                href="/login"
+                                className="inline-flex min-h-11 items-center rounded-lg bg-amber-800 px-6 py-2 font-semibold text-white hover:bg-amber-900"
+                            >
+                                Get Started
+                            </Link>
+                            <Link
+                                href="/about"
+                                className="inline-flex min-h-11 items-center rounded-lg border-2 border-emerald-950 px-6 py-2 font-semibold text-emerald-950 hover:bg-emerald-50"
+                            >
+                                Learn More
+                            </Link>
+                        </div>
+                    </div>
+
+                    <div className="relative h-64 overflow-hidden rounded-xl md:h-96">
+                        <Image
+                            src="/images/hero-gym.jpg"
+                            alt="Dumbbells, running shoes, and an exercise ball on a wooden bench"
+                            fill
+                            preload
+                            sizes="(min-width: 768px) 50vw, 100vw"
+                            className="object-cover"
+                        />
+                    </div>
+                </div>
+            </section>
+            <section className="mx-auto flex max-w-6xl flex-col gap-6 px-4 pb-12 sm:px-6 md:pb-16 lg:px-8">
+                <h2 className="text-2xl font-bold text-emerald-950 md:text-3xl">
+                    What we offer
+                </h2>
+                <div className="grid gap-6 md:grid-cols-3">
+                    <FeatureCard
+                        title="Professional Coaching"
+                        description="Certified coaches build routines around your goals and leave feedback on your progress."
+                    />
+                    <FeatureCard
+                        title="Structured Fitness Plans"
+                        description="Follow a clear weekly schedule with workouts, sets, and reps laid out step by step."
+                    />
+                    <FeatureCard
+                        title="Fitness Gear Store"
+                        description="Shop equipment our coaches trust, right from your account."
+                        badge="Coming soon"
+                    />
+                </div>
+            </section>
+        </main>
+    )
 }
