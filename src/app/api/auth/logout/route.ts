@@ -1,5 +1,13 @@
-// Placeholder: replace with the real logout endpoint (Issue 4).
+// Purpose: This file Handles POST endpoint /api/auth/logout to revoke the active session and
+// remove the authentication cookie.
+
+import { NextResponse } from "next/server";
+import { destroySession } from "@/lib/auth-helpers";
 
 export async function POST() {
-    return Response.json({ error: "Not implemented yet" }, { status: 501 })
+  await destroySession();
+  return NextResponse.json(
+    { message: "You have been logged out securely." },
+    { status: 200 }
+  );
 }
